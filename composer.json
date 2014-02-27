@@ -1,0 +1,19 @@
+{
+    "name": "jeremib/postfixapi",
+    "type": "library",
+    "description": "Postfix API Server",
+    "keywords": [],
+    "homepage": "http://innerserve.com.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jeremi Bergman",
+            "email": "jeremi@innerserve.com"
+        },
+    ],	
+    "require": {
+        "silex/silex": "~1.1",
+        "symfony/security": "~2.3",
+        "symfony/class-loader": "dev-master"
+    }
+}
