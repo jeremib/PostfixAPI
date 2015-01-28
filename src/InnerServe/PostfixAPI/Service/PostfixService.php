@@ -70,7 +70,7 @@ class PostfixService {
 	}
 
 	/**
-	 * Creates a mailbox on the giving domain 
+	 * Creates a mailbox on the given domain
 	 * @param  string $username Username of the mailbox
 	 * @param  string $password Plain text password
 	 * @param  string $domain   Domain name for the new mailbox
@@ -133,6 +133,76 @@ class PostfixService {
 			'created' => date("Y-m-d H:i:s"),
 			'modified' => date("Y-m-d H:i:s"),
 			));
+
+		return true;
+
+	}
+
+
+	/**
+	 * update a mailbox on the given domain
+	 * @param  string $username Username of the mailbox
+	 * @param  string $password Plain text password
+	 * @param  string $domain   Domain name for the new mailbox
+	 * @param  string $name     Full name of user
+	 * @param  integer $quota   Quota for the mailbox, in megabytes
+	 * @return boolean          Boolean value if it was successful or not
+	 */
+	public function updateMailbox($username, $password, $domain, $name, $quota) {
+		if ( !$this->isValidDomain($domain) ) {
+			throw new \InnerServe\PostfixAPI\Exception\DomainNotFoundException($domain);
+		}
+
+		if ( !$this->mailboxExists($username, $domain) ) {
+			throw new \InnerServe\PostfixAPI\Exception\MailboxNotFoundException($username, $domain);
+		}
+
+		if ( empty($username) ) {
+			throw new \InnerServe\PostfixAPI\Exception\MissingRequiredParameterException('Username');
+		}
+
+		if ( empty($password) ) {
+			throw new \InnerServe\PostfixAPI\Exception\MissingRequiredParameterException('Password');
+		}
+
+		if ( empty($domain) ) {
+			throw new \InnerServe\PostfixAPI\Exception\MissingRequiredParameterException('Domain');
+		}
+
+		if ( empty($name) ) {
+			throw new \InnerServe\PostfixAPI\Exception\MissingRequiredParameterException('Name');
+		}
+
+		if ( empty($quota) || !is_numeric($quota) ) {
+			throw new \InnerServe\PostfixAPI\Exception\MissingRequiredParameterException('Quota');
+		}
+
+		$domain_stats = $this->getDomainInfo($domain);
+
+		if ( ($domain_stats['actual_quota']+$quota) > $domain_stats['maxquota'] ) {
+			throw new \InnerServe\PostfixAPI\Exception\DomainMailboxSizeExceededException();
+		}
+
+		if ( $domain_stats['actual_mailboxes'] > $domain_stats['mailboxes'] ) {
+			throw new \InnerServe\PostfixAPI\Exception\DomainMailboxLimitExceededException();
+		}
+
+		$stmt = $this->pdo->prepare("UPDATE mailbox SET
+				username = :username,
+				password = :password,
+				name = :name,
+				quota = :quota,
+				modified = :modified
+				WHERE username = :username AND domain = :domain");
+
+		$stmt->execute(array(
+			'username' => $username . "@" . $domain,
+			'password' => $this->pacrypt($password),
+			'name' => $name,
+			'quota' => intval($quota) * 1048576,
+			'domain' => $domain,
+			'modified' => date("Y-m-d H:i:s")
+		));
 
 		return true;
 
