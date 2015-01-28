@@ -7,10 +7,10 @@ use Symfony\Component\ClassLoader\UniversalClassLoader;
 define('API_VERSION', '0.1');
 define('API_AUTHOR', 'Jeremi Bergman <jeremib@gmail.com>');
 
-define('DB_HOST', '');
-define('DB_USER', '');
-define('DB_PASS', '');
-define('DB_DATABASE', '');
+define('DB_HOST', 'localhost');
+define('DB_USER', 'postfix');
+define('DB_PASS', 'cG3DUah');
+define('DB_DATABASE', 'postfix');
 
 require_once __DIR__.'/../vendor/autoload.php';
 

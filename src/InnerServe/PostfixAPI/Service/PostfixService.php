@@ -78,7 +78,7 @@ class PostfixService {
 	 * @param  integer $quota   Quota for the mailbox, in megabytes
 	 * @return boolean          Boolean value if it was successful or not
 	 */
-	public function createMailbox($username, $password, $domain, $name, $quota) {
+	public function createMailbox($username, $password, $domain, $name, $quota=100) {
 		if ( !$this->isValidDomain($domain) ) {
 			throw new \InnerServe\PostfixAPI\Exception\DomainNotFoundException($domain);
 		}
@@ -394,4 +394,16 @@ class PostfixService {
 	    }
 	    return $ret;
 	}
+}
+
+if ( !function_exists( 'hex2bin' ) ) {
+    function hex2bin( $str ) {
+        $sbin = "";
+        $len = strlen( $str );
+        for ( $i = 0; $i < $len; $i += 2 ) {
+            $sbin .= pack( "H*", substr( $str, $i, 2 ) );
+        }
+
+        return $sbin;
+    }
 }

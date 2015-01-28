@@ -12,7 +12,7 @@ $mailbox->get('/create/', function() use ($app) {
 
 $mailbox->get('/create/{username}/{domain}', function($username, $domain, Request $request) use ($app) {
 	try {
-		return $app['json_response']->ok($app['postfix_service']->createMailbox($username, $request->get('password'), $domain, $request->get('name'), $request->get('quota')));	
+		return $app['json_response']->ok($app['postfix_service']->createMailbox($username, $request->get('password'), $domain, $request->get('name'), $request->get('q')));	
 	} catch(\Exception $e) {
 		return $app['json_response']->error($e->getMessage());
 	}
