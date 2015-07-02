@@ -75,7 +75,7 @@ class PostfixService {
         }
 
         if ( !$this->mailboxExists($username, $domain) ) {
-            throw new \InnerServe\PostfixAPI\Exception\MailboxExistsException($username, $domain);
+            throw new \InnerServe\PostfixAPI\Exception\MailboxDoesNotExistException($username, $domain);
         }
 
         $stmt = $this->pdo->prepare("DELETE FROM mailbox WHERE username = :username AND domain = :domain");
