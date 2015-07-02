@@ -50,7 +50,7 @@ class PostfixService {
 			throw new \InnerServe\PostfixAPI\Exception\DomainNotFoundException($domain);
 		}
 
-		$stmt = $this->pdo->prepare("SELECT username, name, quota, active FROM mailbox WHERE domain = :domain");
+		$stmt = $this->pdo->prepare("SELECT username, name, quota, active, local_part FROM mailbox WHERE domain = :domain");
 		$stmt->execute(array('domain' => $domain));
 		return $stmt->fetchAll(\PDO::FETCH_ASSOC);		
 	}
@@ -69,19 +69,19 @@ class PostfixService {
 		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
 
-    public function deleteMailbox($username, $domain) {
+    public function deleteMailbox($local_part, $domain) {
         if ( !$this->isValidDomain($domain) ) {
             throw new \InnerServe\PostfixAPI\Exception\DomainNotFoundException($domain);
         }
 
-        if ( !$this->mailboxExists($username, $domain) ) {
-            throw new \InnerServe\PostfixAPI\Exception\MailboxDoesNotExistException($username, $domain);
+        if ( !$this->mailboxExists(local_part, $domain) ) {
+            throw new \InnerServe\PostfixAPI\Exception\MailboxDoesNotExistException(local_part, $domain);
         }
 
-        $stmt = $this->pdo->prepare("DELETE FROM mailbox WHERE username = :username AND domain = :domain");
+        $stmt = $this->pdo->prepare("DELETE FROM mailbox WHERE local_part = :local_part AND domain = :domain");
 
         $stmt->execute(array(
-            'username' => $username . "@" . $domain,
+            'local_part' => local_part,
             'domain' => $domain,
         ));
 
