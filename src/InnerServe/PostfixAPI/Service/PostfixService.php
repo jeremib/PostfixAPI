@@ -50,7 +50,7 @@ class PostfixService {
 			throw new \InnerServe\PostfixAPI\Exception\DomainNotFoundException($domain);
 		}
 
-		$stmt = $this->pdo->prepare("SELECT username, name, quota, active, local_part FROM mailbox WHERE domain = :domain");
+		$stmt = $this->pdo->prepare("SELECT username, name, quota/262144000 as quota, active, local_part FROM mailbox WHERE domain = :domain");
 		$stmt->execute(array('domain' => $domain));
 		return $stmt->fetchAll(\PDO::FETCH_ASSOC);		
 	}
