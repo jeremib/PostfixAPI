@@ -69,6 +69,26 @@ class PostfixService {
 		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
 
+    public function deleteMailbox($username, $domain) {
+        if ( !$this->isValidDomain($domain) ) {
+            throw new \InnerServe\PostfixAPI\Exception\DomainNotFoundException($domain);
+        }
+
+        if ( $this->mailboxExists($username, $domain) ) {
+            throw new \InnerServe\PostfixAPI\Exception\MailboxExistsException($username, $domain);
+        }
+
+        $stmt = $this->pdo->prepare("DELETE FROM mailbox WHERE username = :username AND domain = :domain");
+
+        $stmt->execute(array(
+            'username' => $username . "@" . $domain,
+            'domain' => $domain,
+        ));
+
+        return true;
+
+    }
+
 	/**
 	 * Creates a mailbox on the given domain
 	 * @param  string $username Username of the mailbox

@@ -19,6 +19,15 @@ $mailbox->get('/create/{username}/{domain}', function($username, $domain, Reques
 
 });
 
+$mailbox->get('/delete/{username}/{domain}', function($username, $domain, Request $request) use ($app) {
+    try {
+        return $app['json_response']->ok($app['postfix_service']->deleteMailbox($username, $domain);
+    } catch(\Exception $e) {
+        return $app['json_response']->error($e->getMessage());
+    }
+
+});
+
 $mailbox->get('/update/{username}/{domain}', function($username, $domain, Request $request) use ($app) {
 	try {
 		return $app['json_response']->ok($app['postfix_service']->updateMailbox($username, $request->get('password'), $domain, $request->get('name'), $request->get('quota')));
