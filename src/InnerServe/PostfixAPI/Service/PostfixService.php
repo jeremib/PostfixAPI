@@ -74,14 +74,14 @@ class PostfixService {
             throw new \InnerServe\PostfixAPI\Exception\DomainNotFoundException($domain);
         }
 
-        if ( !$this->mailboxExists(local_part, $domain) ) {
-            throw new \InnerServe\PostfixAPI\Exception\MailboxDoesNotExistException(local_part, $domain);
+        if ( !$this->mailboxExists($local_part, $domain) ) {
+            throw new \InnerServe\PostfixAPI\Exception\MailboxDoesNotExistException($local_part, $domain);
         }
 
         $stmt = $this->pdo->prepare("DELETE FROM mailbox WHERE local_part = :local_part AND domain = :domain");
 
         $stmt->execute(array(
-            'local_part' => local_part,
+            'local_part' => $local_part,
             'domain' => $domain,
         ));
 
