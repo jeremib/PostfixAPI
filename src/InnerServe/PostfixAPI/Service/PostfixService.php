@@ -74,7 +74,7 @@ class PostfixService {
             throw new \InnerServe\PostfixAPI\Exception\DomainNotFoundException($domain);
         }
 
-        if ( $this->mailboxExists($username, $domain) ) {
+        if ( !$this->mailboxExists($username, $domain) ) {
             throw new \InnerServe\PostfixAPI\Exception\MailboxExistsException($username, $domain);
         }
 
