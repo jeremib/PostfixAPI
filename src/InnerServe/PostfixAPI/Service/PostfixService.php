@@ -50,10 +50,20 @@ class PostfixService {
 			throw new \InnerServe\PostfixAPI\Exception\DomainNotFoundException($domain);
 		}
 
-		$stmt = $this->pdo->prepare("SELECT username, name, quota/262144000 as quota, active, local_part FROM mailbox WHERE domain = :domain");
+		$stmt = $this->pdo->prepare("SELECT username, name, (quota/262144000) quota, active, local_part FROM mailbox WHERE domain = :domain");
 		$stmt->execute(array('domain' => $domain));
 		return $stmt->fetchAll(\PDO::FETCH_ASSOC);		
 	}
+
+    public function getMailBox($local_part, $domain) {
+        if ( !$this->isValidDomain($domain) ) {
+            throw new \InnerServe\PostfixAPI\Exception\DomainNotFoundException($domain);
+        }
+
+        $stmt = $this->pdo->prepare("SELECT username, name, (quota/262144000) quota, active, local_part FROM mailbox WHERE domain = :domain AND local_part = :local_part");
+        $stmt->execute(array('domain' => $domain, 'local_part' => $local_part));
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
 
 	/**
 	 * Get list of domains on mail system

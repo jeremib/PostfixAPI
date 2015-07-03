@@ -44,5 +44,13 @@ $mailbox->get('/list/{domain}', function($domain) use ($app) {
 	}
 });
 
+$mailbox->get('/get/{username}/{domain}', function($username, $domain) use ($app) {
+    try {
+        return $app['json_response']->ok($app['postfix_service']->getMailBox($username, $domain));
+    } catch(\Exception $e) {
+        return $app['json_response']->error($e->getMessage());
+    }
+});
+
 // mount to the application
 $app->mount('/mailbox', $mailbox);
