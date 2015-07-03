@@ -191,9 +191,9 @@ class PostfixService {
 			throw new \InnerServe\PostfixAPI\Exception\MissingRequiredParameterException('Username');
 		}
 
-		if ( empty($password) ) {
-			throw new \InnerServe\PostfixAPI\Exception\MissingRequiredParameterException('Password');
-		}
+//		if ( empty($password) ) {
+//			throw new \InnerServe\PostfixAPI\Exception\MissingRequiredParameterException('Password');
+//		}
 
 		if ( empty($domain) ) {
 			throw new \InnerServe\PostfixAPI\Exception\MissingRequiredParameterException('Domain');
@@ -217,22 +217,47 @@ class PostfixService {
 			throw new \InnerServe\PostfixAPI\Exception\DomainMailboxLimitExceededException();
 		}
 
-		$stmt = $this->pdo->prepare("UPDATE mailbox SET
+        if ( $password ) {
+            $stmt = $this->pdo->prepare(
+                "UPDATE mailbox SET
 				username = :username,
 				password = :password,
 				name = :name,
 				quota = :quota,
 				modified = :modified
-				WHERE username = :username AND domain = :domain");
+				WHERE username = :username AND domain = :domain"
+            );
 
-		$stmt->execute(array(
-			'username' => $username . "@" . $domain,
-			'password' => $this->pacrypt($password),
-			'name' => $name,
-			'quota' => intval($quota) * 1048576,
-			'domain' => $domain,
-			'modified' => date("Y-m-d H:i:s")
-		));
+            $stmt->execute(
+                array(
+                    'username' => $username . "@" . $domain,
+                    'password' => $this->pacrypt($password),
+                    'name' => $name,
+                    'quota' => intval($quota) * 1048576,
+                    'domain' => $domain,
+                    'modified' => date("Y-m-d H:i:s")
+                )
+            );
+        } else {
+            $stmt = $this->pdo->prepare(
+                "UPDATE mailbox SET
+				username = :username,
+				name = :name,
+				quota = :quota,
+				modified = :modified
+				WHERE username = :username AND domain = :domain"
+            );
+
+            $stmt->execute(
+                array(
+                    'username' => $username . "@" . $domain,
+                    'name' => $name,
+                    'quota' => intval($quota) * 1048576,
+                    'domain' => $domain,
+                    'modified' => date("Y-m-d H:i:s")
+                )
+            );
+        }
 
 		return true;
 
