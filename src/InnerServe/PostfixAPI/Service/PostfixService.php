@@ -259,7 +259,7 @@ class PostfixService {
             );
         }
 
-		return true;
+		return $this->getMailBox($username, $domain);
 
 	}
 
