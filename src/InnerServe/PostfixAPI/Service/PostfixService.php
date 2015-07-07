@@ -210,7 +210,7 @@ class PostfixService {
 		$domain_stats = $this->getDomainInfo($domain);
 
 		if ( ($domain_stats['actual_quota']+$quota) > $domain_stats['maxquota'] ) {
-			throw new \InnerServe\PostfixAPI\Exception\DomainMailboxSizeExceededException();
+//			throw new \InnerServe\PostfixAPI\Exception\DomainMailboxSizeExceededException();
 		}
 
 		if ( $domain_stats['actual_mailboxes'] > $domain_stats['mailboxes'] ) {
