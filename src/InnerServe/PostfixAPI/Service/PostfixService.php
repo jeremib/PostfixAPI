@@ -95,10 +95,11 @@ class PostfixService {
             'domain' => $domain,
         ));
 
-        $stmt = $this->pdo->prepare("DELETE FROM alias WHERE address = :address");
+        $stmt = $this->pdo->prepare("DELETE FROM alias WHERE address = :address AND domain = :domain");
 
         $stmt->execute(array(
-            'address' => $local_part . '@' . $domain
+            'address' => $local_part . '@' . $domain,
+            'domain' => $domain
         ));
 
         return true;
