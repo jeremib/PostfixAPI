@@ -95,6 +95,12 @@ class PostfixService {
             'domain' => $domain,
         ));
 
+        $stmt = $this->pdo->prepare("DELETE FROM alias WHERE address = :address");
+
+        $stmt->execute(array(
+            'address' => $local_part . '@' . $domain
+        ));
+
         return true;
 
     }
@@ -163,6 +169,18 @@ class PostfixService {
 			'created' => date("Y-m-d H:i:s"),
 			'modified' => date("Y-m-d H:i:s"),
 			));
+
+        $stmt = $this->pdo->prepare("INSERT INTO 
+			alias (address, goto, domain, created, modified, active)
+			VALUES
+			(:username, :username, :domain, :created, :modified, 1)");
+
+        $stmt->execute(array(
+            'username' => $username . "@" . $domain,
+            'domain' => $domain,
+            'created' => date("Y-m-d H:i:s"),
+            'modified' => date("Y-m-d H:i:s"),
+        ));
 
 		return true;
 
