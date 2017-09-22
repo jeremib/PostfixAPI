@@ -25,5 +25,13 @@ $domain->get('/get/{domain}', function($domain) use ($app) {
 	return $app['json_response']->ok($app['postfix_service']->getDomainInfo($domain));
 });
 
+$domain->get('/status/{domain}/enable', function($domain) use ($app) {
+	return $app['json_response']->ok($app['postfix_service']->enableDomain($domain));
+});
+
+$domain->get('/status/{domain}/disable', function($domain) use ($app) {
+	return $app['json_response']->ok($app['postfix_service']->disableDomain($domain));
+});
+
 // mount to the application
 $app->mount('/domain', $domain);

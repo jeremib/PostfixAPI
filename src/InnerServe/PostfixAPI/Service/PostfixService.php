@@ -9,6 +9,26 @@ class PostfixService {
 		$this->pdo = $pdo;
 	}
 
+	public function enableDomain($domain) {
+        if ( $this->isValidDomain($domain) ) {
+            throw new \InnerServe\PostfixAPI\Exception\DomainAlreadyExistsException($domain);
+        }
+
+        $stmt = $this->pdo->prepare("UPDATE domain SET active = 1 WHERE domain = :domain");
+        $stmt->execute(array('domain' => $domain));
+        return true;
+    }
+
+	public function disableDomain($domain) {
+        if ( $this->isValidDomain($domain) ) {
+            throw new \InnerServe\PostfixAPI\Exception\DomainAlreadyExistsException($domain);
+        }
+
+        $stmt = $this->pdo->prepare("UPDATE domain SET active = 0 WHERE domain = :domain");
+        $stmt->execute(array('domain' => $domain));
+        return true;
+    }
+
 	public function createDomain($domain, $maxaliases = 10, $maxmailboxes = 10, $maxquota = 1000) {
 		if ( $this->isValidDomain($domain) ) {
 			throw new \InnerServe\PostfixAPI\Exception\DomainAlreadyExistsException($domain);
