@@ -10,8 +10,8 @@ class PostfixService {
 	}
 
 	public function enableDomain($domain) {
-        if ( $this->isValidDomain($domain) ) {
-            throw new \InnerServe\PostfixAPI\Exception\DomainAlreadyExistsException($domain);
+        if ( !$this->isValidDomain($domain) ) {
+            throw new \InnerServe\PostfixAPI\Exception\DomainNotFoundException($domain);
         }
 
         $stmt = $this->pdo->prepare("UPDATE domain SET active = 1 WHERE domain = :domain");
@@ -20,8 +20,8 @@ class PostfixService {
     }
 
 	public function disableDomain($domain) {
-        if ( $this->isValidDomain($domain) ) {
-            throw new \InnerServe\PostfixAPI\Exception\DomainAlreadyExistsException($domain);
+        if ( !$this->isValidDomain($domain) ) {
+            throw new \InnerServe\PostfixAPI\Exception\DomainNotFoundException($domain);
         }
 
         $stmt = $this->pdo->prepare("UPDATE domain SET active = 0 WHERE domain = :domain");

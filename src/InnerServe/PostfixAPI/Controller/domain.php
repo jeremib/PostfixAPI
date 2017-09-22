@@ -26,11 +26,19 @@ $domain->get('/get/{domain}', function($domain) use ($app) {
 });
 
 $domain->get('/status/{domain}/enable', function($domain) use ($app) {
-	return $app['json_response']->ok($app['postfix_service']->enableDomain($domain));
+    try {
+        return $app['json_response']->ok($app['postfix_service']->enableDomain($domain));
+    } catch(\Exception $e) {
+        return $app['json_response']->error($e->getMessage());
+    }
 });
 
 $domain->get('/status/{domain}/disable', function($domain) use ($app) {
-	return $app['json_response']->ok($app['postfix_service']->disableDomain($domain));
+    try {
+        return $app['json_response']->ok($app['postfix_service']->disableDomain($domain));
+    } catch(\Exception $e) {
+        return $app['json_response']->error($e->getMessage());
+    }
 });
 
 // mount to the application
